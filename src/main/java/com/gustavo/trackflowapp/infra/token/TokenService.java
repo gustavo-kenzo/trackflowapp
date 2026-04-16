@@ -3,6 +3,7 @@ package com.gustavo.trackflowapp.infra.token;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.gustavo.trackflowapp.modules.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,28 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("auth0")
                     .withSubject(user.getEmail())
-                    .withClaim("id",user.getId())
+                    .withClaim("id", user.getId())
                     .withExpiresAt(expiresAt())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error generating JWT token");
+        }
+    }
+
+    public Long verifyToken(String token) {
+        try {
+            var algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    // specify any specific claim validations
+                    .withIssuer("auth0")
+                    // reusable verifier instance
+                    .build()
+                    .verify(token)
+                    .getClaim("id")
+                    .asLong();
+
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Invalid or expired token");
         }
     }
 
