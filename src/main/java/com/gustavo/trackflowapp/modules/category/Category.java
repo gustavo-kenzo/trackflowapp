@@ -32,11 +32,11 @@ public class Category extends AuditableEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    public Category(User user, String name, CategoryType type, boolean systemDefault) {
+    public Category(User user, String name, CategoryType type, Boolean systemDefault) {
         this.user = user;
         this.name = name;
         this.type = type;
-        this.systemDefault = systemDefault;
+        this.systemDefault = systemDefault != null ? systemDefault : false;
         this.active = true;
     }
 
