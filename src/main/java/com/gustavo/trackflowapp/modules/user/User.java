@@ -43,4 +43,14 @@ public class User extends AuditableEntity implements UserDetails {
     public String getUsername() {
         return name;
     }
+
+    public void updateName(String name) {
+        if (name != null)
+            this.name = name;
+    }
+
+    public void updatePassword(String password) {
+        if (password != null)
+            this.password = password;
+    }
 }

@@ -2,11 +2,11 @@ package com.gustavo.trackflowapp.modules.user;
 
 import com.gustavo.trackflowapp.modules.user.dto.UserDataDTO;
 import com.gustavo.trackflowapp.modules.user.dto.UserRegisterDTO;
+import com.gustavo.trackflowapp.modules.user.dto.UserUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,19 +24,19 @@ public class UserController {
         return ResponseEntity.created(uri).body(userData);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<UserDataDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(userService.findAll(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDataDTO> findById(@PathVariable Long id){
-        return ResponseEntity.ok(userService.findById(id));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id){
-        userService.deleteById(id);
+    @DeleteMapping
+    public ResponseEntity deleteMyProfile(@AuthenticationPrincipal(expression = "id") Long id) {
+        userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<UserDataDTO> updateMyProfile(@RequestBody @Valid UserUpdateDTO dto, @AuthenticationPrincipal(expression = "id") Long id) {
+        return ResponseEntity.ok(userService.update(dto, id));
+    }
+
+    @GetMapping
+    public ResponseEntity getMyProfile(@AuthenticationPrincipal(expression = "id") Long id) {
+        return ResponseEntity.ok(userService.getMyProfile(id));
     }
 }

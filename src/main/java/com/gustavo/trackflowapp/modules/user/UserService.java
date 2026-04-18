@@ -2,9 +2,8 @@ package com.gustavo.trackflowapp.modules.user;
 
 import com.gustavo.trackflowapp.modules.user.dto.UserDataDTO;
 import com.gustavo.trackflowapp.modules.user.dto.UserRegisterDTO;
+import com.gustavo.trackflowapp.modules.user.dto.UserUpdateDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,21 +24,27 @@ public class UserService {
         return new UserDataDTO(user.getId(), user.getName(), user.getEmail());
     }
 
-    public Page<UserDataDTO> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserDataDTO::new);
-    }
-
-    public UserDataDTO findById(Long id) {
-        return userRepository
-                .findById(id)
-                .map(UserDataDTO::new)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+    public void delete(Long id) {
+        var rowsAffected = userRepository.deleteByIdAndReturnCount(id);
+        if (rowsAffected == 0)
+            throw new RuntimeException("User id not found for delete");
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        var rowsAffected = userRepository.deleteByIdAndReturnCount(id);
-        if (rowsAffected == 0)
-            throw new RuntimeException("User id not found");
+    public UserDataDTO update(UserUpdateDTO dto, Long id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found for update"));
+        if (dto.name() != null)
+            user.updateName(dto.name());
+        if (dto.password() != null) {
+            var password = passwordEncoder.encode(dto.password());
+            user.updatePassword(password);
+        }
+        return new UserDataDTO(user);
+    }
+
+    public UserDataDTO getMyProfile(Long id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found for list"));
+        return new UserDataDTO(user);
     }
 }
