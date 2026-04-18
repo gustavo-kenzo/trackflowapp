@@ -40,6 +40,14 @@ public class Category extends AuditableEntity {
         this.active = true;
     }
 
+    public void setAsSystemDefault() {
+        this.systemDefault = true;
+    }
+
+    public void unsetAsSystemDefault() {
+        this.systemDefault = false;
+    }
+
     public void deactivate() {
         if (!this.systemDefault)
             this.active = false;
