@@ -22,22 +22,21 @@ public class AccountService {
         return new AccountDataDTO(account);
     }
 
-    public Page<AccountDataDTO> findAll(String owner, Pageable pageable) {
-        if (owner != null && !owner.isBlank())
-            return accountRepository.findByUserNameIgnoreCaseAndActiveTrue(owner, pageable).map(AccountDataDTO::new);
-        return accountRepository.findByActiveTrue(pageable).map(AccountDataDTO::new);
+    public Page<AccountDataDTO> findMyAccounts(Long id, Pageable pageable) {
+        var accounts = accountRepository.findMyAccounts(id, pageable);
+        return accounts.map(AccountDataDTO::new);
     }
 
     @Transactional
-    public void delete(Long id) {
-        var rowsAffected = accountRepository.deleteByIdAndReturnCount(id);
+    public void delete(Long accountId, Long userId) {
+        var rowsAffected = accountRepository.deleteMyAccountAndReturnCount(accountId, userId);
         if (rowsAffected == 0)
             throw new RuntimeException("Account id not found for delete");
     }
 
     @Transactional
-    public AccountDataDTO deactivate(Long id) {
-        var account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account id not found for deactivate"));
+    public AccountDataDTO deactivate(Long accountId, Long userId) {
+        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for deactivate"));
         if (!account.isActive())
             throw new RuntimeException("Account is already inactive");
         account.deactivate();
@@ -45,8 +44,8 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDataDTO activate(Long id) {
-        var account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account id not found for deactivate"));
+    public AccountDataDTO activate(Long accountId, Long userId) {
+        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
         if (account.isActive())
             throw new RuntimeException("Account is already active");
         account.activate();

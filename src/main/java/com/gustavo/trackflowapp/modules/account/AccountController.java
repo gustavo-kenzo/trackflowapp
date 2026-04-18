@@ -26,23 +26,25 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AccountDataDTO>> findAccounts(@RequestParam(required = false) String owner, Pageable pageable) {
-        return ResponseEntity.ok(accountService.findAll(owner, pageable));
+    public ResponseEntity<Page<AccountDataDTO>> findMyAccounts(@AuthenticationPrincipal(expression = "id") Long id, Pageable pageable) {
+        return ResponseEntity.ok(accountService.findMyAccounts(id, pageable));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteAccount(@PathVariable Long id) {
-        accountService.delete(id);
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity deleteMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
+        accountService.delete(accountId, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/deactivate")
-    public ResponseEntity deactivateAccount(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.deactivate(id));
+    //usuario desativa apenas conta que ele mesmo criou
+    @PatchMapping("/{accountId}/deactivate")
+    public ResponseEntity deactivateMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
+        return ResponseEntity.ok(accountService.deactivate(accountId, userId));
     }
 
-    @PatchMapping("/{id}/activate")
-    public ResponseEntity activateAccount(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.activate(id));
+    //usuario ativa apenas conta que ele mesmo criou
+    @PatchMapping("/{accountId}/activate")
+    public ResponseEntity activateMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
+        return ResponseEntity.ok(accountService.activate(accountId, userId));
     }
 }
