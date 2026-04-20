@@ -40,14 +40,6 @@ public class Category extends AuditableEntity {
         this.active = true;
     }
 
-    public void setAsSystemDefault() {
-        this.systemDefault = true;
-    }
-
-    public void unsetAsSystemDefault() {
-        this.systemDefault = false;
-    }
-
     public void deactivate() {
         if (!this.systemDefault)
             this.active = false;
@@ -57,5 +49,37 @@ public class Category extends AuditableEntity {
 
     public void activate() {
         this.active = true;
+    }
+
+    public boolean updateName(String name) {
+        if (name != null) {
+            this.name = name;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateType(CategoryType type) {
+        if (type != null && (type.equals(CategoryType.INCOME) || type.equals(CategoryType.EXPENSE))) {
+            this.type = type;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateSystemDefault(Boolean systemDefault) {
+        if (systemDefault != null) {
+            this.systemDefault = systemDefault;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateActive(Boolean active) {
+        if (active != null) {
+            this.active = active;
+            return true;
+        }
+        return false;
     }
 }
