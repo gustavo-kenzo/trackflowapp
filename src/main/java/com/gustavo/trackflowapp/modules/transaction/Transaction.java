@@ -32,7 +32,7 @@ public class Transaction extends AuditableEntity {
     private Account account;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
@@ -86,8 +86,12 @@ public class Transaction extends AuditableEntity {
         this.type = type;
         this.competenceDate = competenceDate;
         this.settlementDate = settlementDate;
-        if (settlementDate != null && settlementDate.isBefore(competenceDate))
-            throw new IllegalArgumentException("settlementDate cannot be before competenceDate");
+        if (settlementDate != null) {
+            if (settlementDate.isBefore(competenceDate))
+                throw new IllegalArgumentException("settlementDate cannot be before competenceDate");
+            if (settlementDate.isAfter(LocalDate.now()))
+                throw new IllegalArgumentException("settlementDate shouldn't be future");
+        }
         this.description = description;
         this.status = this.settlementDate != null ? TransactionStatus.SETTLED : TransactionStatus.PENDING;
     }

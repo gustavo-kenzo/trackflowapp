@@ -2,7 +2,7 @@ create table transactions (
     id bigint not null generated always as identity,
     user_id bigint not null,
     account_id bigint not null,
-    category_id bigint not null,
+    category_id bigint,
     recurrence_id bigint,
     amount numeric(15,2) not null,
     type varchar(20) not null  constraint chk_transactions_type  check (type in ('INCOME','EXPENSE')),

@@ -1,4 +1,8 @@
 package com.gustavo.trackflowapp.modules.authentication.dto;
 
-public record TokenDTO(String acess_token) {
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public record TokenDTO(String accessToken) {
 }
