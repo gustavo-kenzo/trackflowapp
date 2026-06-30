@@ -11,9 +11,6 @@ public record AccountRegisterDTO(
         @NotBlank
         String name,
 
-        @NotNull
-        AccountType type,
-
         @PositiveOrZero
         BigDecimal openingBalance
 ) {

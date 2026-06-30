@@ -17,7 +17,7 @@ public class AccountService {
 
     @Transactional
     public AccountDataDTO create(AccountRegisterDTO dto, User user) {
-        var account = new Account(user, dto.name(), dto.type(), dto.openingBalance());
+        var account = new Account(user, dto.name(), dto.openingBalance());
         accountRepository.save(account);
         return new AccountDataDTO(account);
     }

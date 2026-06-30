@@ -3,7 +3,6 @@ create table accounts (
     user_id bigint not null,
 
     name varchar(150) not null,
-    type varchar(20) not null  constraint chk_account_type  check (type in ('CHECKING','SAVINGS','WALLET','CREDIT_CARD')),
     opening_balance numeric(15,2) not null default 0,
     current_balance numeric(15,2) not null default 0,
     active boolean default true,

@@ -1,7 +1,6 @@
 package com.gustavo.trackflowapp.modules.account.dto;
 
 import com.gustavo.trackflowapp.modules.account.Account;
-import com.gustavo.trackflowapp.modules.account.AccountType;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
 
@@ -12,7 +11,6 @@ public record AccountDataDTO(
         Long id,
         String owner,
         String accountName,
-        AccountType type,
         BigDecimal currentBalance,
         boolean active
 ) {
@@ -21,7 +19,6 @@ public record AccountDataDTO(
                 account.getId(),
                 account.getUser().getName(),
                 account.getName(),
-                account.getType(),
                 account.getCurrentBalance(),
                 account.isActive());
     }

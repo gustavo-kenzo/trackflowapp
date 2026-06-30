@@ -25,10 +25,6 @@ public class Account extends AuditableEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private AccountType type;
-
     @Column(name = "opening_balance", nullable = false)
     private BigDecimal openingBalance;
 
@@ -40,11 +36,9 @@ public class Account extends AuditableEntity {
 
     public Account(User user,
                    String name,
-                   AccountType type,
                    BigDecimal openingBalance) {
         this.user = user;
         this.name = name;
-        this.type = type;
         this.openingBalance = openingBalance != null ? openingBalance : BigDecimal.ZERO;
         this.currentBalance = this.openingBalance;
         this.active = true;

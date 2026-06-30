@@ -68,12 +68,12 @@ public class Transaction extends AuditableEntity {
                        LocalDate competenceDate,
                        LocalDate settlementDate,
                        String description) {
-        validateNonNull(user, account, category, type, competenceDate);
+        validateNonNull(user, account, type, competenceDate);
 
         validateOwnership(category, user, Category::getUser, "category does not belong to this user");
         validateOwnership(account, user, Account::getUser, "this account does not belong to this user");
         validateOwnership(recurrence, user, Recurrence::getUser, "this recurrence does not belong to this user");
-        
+
 
         this.user = user;
         this.account = account;
@@ -92,10 +92,9 @@ public class Transaction extends AuditableEntity {
         this.status = this.settlementDate != null ? TransactionStatus.SETTLED : TransactionStatus.PENDING;
     }
 
-    private void validateNonNull(User user, Account account, Category category, TransactionType type, LocalDate competenceDate) {
+    private void validateNonNull(User user, Account account, TransactionType type, LocalDate competenceDate) {
         Objects.requireNonNull(user, "user is required");
         Objects.requireNonNull(account, "account is required");
-        Objects.requireNonNull(category, "category is required");
         Objects.requireNonNull(type, "type is required");
         Objects.requireNonNull(competenceDate, "competenceDate is required");
     }
@@ -123,6 +122,6 @@ public class Transaction extends AuditableEntity {
         this.status = TransactionStatus.PENDING;
         this.settlementDate = null;
     }
-    
+
 
 }
