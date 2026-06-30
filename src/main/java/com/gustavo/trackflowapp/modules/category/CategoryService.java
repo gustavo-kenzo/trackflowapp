@@ -106,4 +106,8 @@ public class CategoryService {
         // }
         categoryRepository.delete(category);
     }
+
+    public Category getCategory(Long categoryId, Long userId) {
+        return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
+    }
 }

@@ -51,4 +51,8 @@ public class AccountService {
         account.activate();
         return new AccountDataDTO(account);
     }
+
+    public Account getAccount(Long accountId, Long userId) {
+        return accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
+    }
 }

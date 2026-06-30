@@ -1,0 +1,29 @@
+package com.gustavo.trackflowapp.modules.transaction;
+
+import com.gustavo.trackflowapp.modules.transaction.dto.TransactionDataDTO;
+import com.gustavo.trackflowapp.modules.transaction.dto.TransactionRegisterDTO;
+import com.gustavo.trackflowapp.modules.user.User;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+@RestController
+@RequestMapping("transactions")
+@RequiredArgsConstructor
+public class TransactionController {
+
+    private final TransactionService transactionService;
+
+    @PostMapping
+    public ResponseEntity<TransactionDataDTO> createTransaction(@RequestBody @Valid TransactionRegisterDTO dto, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        var transactionData = transactionService.create(dto, user);
+        var uri = uriBuilder.path("/transactions/{id}").buildAndExpand(transactionData.transactionId()).toUri();
+        return ResponseEntity.created(uri).body(transactionData);
+    }
+}
