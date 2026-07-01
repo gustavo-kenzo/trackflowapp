@@ -22,7 +22,7 @@ public class CategoryService {
         if (dto.systemDefault() != null && dto.systemDefault())
             categoryRepository.unsetSystemDefault(user.getId());
 
-        var category = new Category(user, dto.name(), dto.type(), dto.systemDefault());
+        var category = new Category(user, dto.name(), dto.systemDefault());
 
         categoryRepository.save(category);
         return new CategoryDataDTO(category);
@@ -48,8 +48,6 @@ public class CategoryService {
         System.out.println("ACTIVE");
         hasChanged |= category.updateName(dto.name());
         System.out.println("NME");
-        hasChanged |= category.updateType(dto.type());
-        System.out.println("TYPE");
         hasChanged |= processSystemDefaultUpdate(dto.systemDefault(), category, userId);
         System.out.println("SYSTEM DEFAULT");
 
@@ -100,7 +98,7 @@ public class CategoryService {
         if (category.isSystemDefault())
             throw new RuntimeException("System default category cannot be deleted");
 
-        // TODO: Verificar se existem transações associadas
+        // TODO: Verificar se existem transações associadas. Nova regra: permitir que exista transacções com categorias null
         // if (transactionRepository.existsByCategoryId(categoryId)) {
         //     throw new RuntimeException("Cannot delete category with associated transactions");
         // }
@@ -108,6 +106,6 @@ public class CategoryService {
     }
 
     public Category getCategory(Long categoryId, Long userId) {
-        return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
+        return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new RuntimeException("Category id not found"));
     }
 }

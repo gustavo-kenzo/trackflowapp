@@ -22,20 +22,15 @@ public class Category extends AuditableEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private CategoryType type;
-
     @Column(name = "system_default", nullable = false)
     private boolean systemDefault;
 
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    public Category(User user, String name, CategoryType type, Boolean systemDefault) {
+    public Category(User user, String name, Boolean systemDefault) {
         this.user = user;
         this.name = name;
-        this.type = type;
         this.systemDefault = systemDefault != null ? systemDefault : false;
         this.active = true;
     }
@@ -54,14 +49,6 @@ public class Category extends AuditableEntity {
     public boolean updateName(String name) {
         if (name != null) {
             this.name = name;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean updateType(CategoryType type) {
-        if (type != null && (type.equals(CategoryType.INCOME) || type.equals(CategoryType.EXPENSE))) {
-            this.type = type;
             return true;
         }
         return false;
