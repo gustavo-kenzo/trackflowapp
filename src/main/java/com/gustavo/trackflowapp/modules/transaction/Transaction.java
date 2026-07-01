@@ -117,6 +117,8 @@ public class Transaction extends AuditableEntity {
         var date = settlementDate != null ? settlementDate : LocalDate.now();
         if (date.isBefore(this.competenceDate))
             throw new IllegalStateException("settlementDate cannot be before competenceDate");
+        if(date.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("settlementDate shouldn't be future");
         this.status = TransactionStatus.SETTLED;
         this.settlementDate = date;
     }

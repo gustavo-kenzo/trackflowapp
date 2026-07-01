@@ -5,6 +5,7 @@ import com.gustavo.trackflowapp.modules.category.Category;
 import com.gustavo.trackflowapp.modules.category.CategoryService;
 import com.gustavo.trackflowapp.modules.transaction.dto.TransactionDataDTO;
 import com.gustavo.trackflowapp.modules.transaction.dto.TransactionRegisterDTO;
+import com.gustavo.trackflowapp.modules.transaction.dto.TransactionSettleDTO;
 import com.gustavo.trackflowapp.modules.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,27 @@ public class TransactionService {
 
     public TransactionDataDTO createByRecurrence() {
         return null;
+    }
+
+    @Transactional
+    public TransactionDataDTO settleTransaction(TransactionSettleDTO dto, User user) {
+        var transaction = transactionRepository.findMyTransactionById(dto.id(), user.getId()).orElseThrow(() -> new RuntimeException("transaction not found"));
+        transaction.settle(dto.settlementDate());
+        switch (transaction.getType()) {
+            case INCOME -> transaction.getAccount().credit(transaction.getAmount());
+            case EXPENSE -> transaction.getAccount().debit(transaction.getAmount());
+        }
+        return new TransactionDataDTO(transaction);
+    }
+
+    @Transactional
+    public TransactionDataDTO reopenTransaction(TransactionSettleDTO dto, User user) {
+        var transaction = transactionRepository.findMyTransactionById(dto.id(), user.getId()).orElseThrow(() -> new RuntimeException("transaction not found"));
+        transaction.reopen();
+        switch (transaction.getType()) {
+            case INCOME -> transaction.getAccount().debit(transaction.getAmount());
+            case EXPENSE -> transaction.getAccount().credit(transaction.getAmount());
+        }
+        return new TransactionDataDTO(transaction);
     }
 }
