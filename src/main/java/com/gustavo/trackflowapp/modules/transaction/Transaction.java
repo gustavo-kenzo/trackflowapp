@@ -129,5 +129,24 @@ public class Transaction extends AuditableEntity {
         this.settlementDate = null;
     }
 
+    public void update(Account account,
+                       Category category,
+                       BigDecimal amount,
+                       TransactionType type,
+                       LocalDate competenceDate,
+                       String description) {
+        if (account != null)
+            this.account = account;
+        if (category != null)
+            this.category = category;
+        if (amount != null)
+            this.amount = amount;
+        if (type != null)
+            this.type = type;
+        if (competenceDate != null)
+            this.competenceDate = competenceDate;
+        if (description != null)
+            this.description = description;
+    }
 
 }

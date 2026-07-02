@@ -3,6 +3,7 @@ package com.gustavo.trackflowapp.modules.transaction;
 import com.gustavo.trackflowapp.modules.transaction.dto.TransactionDataDTO;
 import com.gustavo.trackflowapp.modules.transaction.dto.TransactionRegisterDTO;
 import com.gustavo.trackflowapp.modules.transaction.dto.TransactionSettleDTO;
+import com.gustavo.trackflowapp.modules.transaction.dto.TransactionUpdateDTO;
 import com.gustavo.trackflowapp.modules.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,11 @@ public class TransactionController {
 
     @PatchMapping("/reopen")
     public ResponseEntity<TransactionDataDTO> reopenTransaction(@RequestBody @Valid TransactionSettleDTO dto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(transactionService.reopenTransaction(dto,user));
+        return ResponseEntity.ok(transactionService.reopenTransaction(dto, user));
+    }
+
+    @PutMapping
+    public ResponseEntity<TransactionDataDTO> updateTransaction(@RequestBody @Valid TransactionUpdateDTO dto, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(transactionService.updateTransaction(dto, user));
     }
 }
