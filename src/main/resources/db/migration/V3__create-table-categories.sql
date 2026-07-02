@@ -2,7 +2,6 @@ create table categories (
     id bigint not null generated always as identity,
     user_id bigint not null,
     name varchar(150) not null,
-    system_default boolean default false,
     active boolean default true,
     created_at timestamp with time zone default current_timestamp,
     updated_at timestamp with time zone default current_timestamp,

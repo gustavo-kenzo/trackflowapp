@@ -22,51 +22,19 @@ public class Category extends AuditableEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "system_default", nullable = false)
-    private boolean systemDefault;
-
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    public Category(User user, String name, Boolean systemDefault) {
+    public Category(User user, String name) {
         this.user = user;
         this.name = name;
-        this.systemDefault = systemDefault != null ? systemDefault : false;
         this.active = true;
     }
 
-    public void deactivate() {
-        if (!this.systemDefault)
-            this.active = false;
-        else
-            throw new IllegalStateException("system category cannot be deactivated");
-    }
-
-    public void activate() {
-        this.active = true;
-    }
-
-    public boolean updateName(String name) {
-        if (name != null) {
+    public void update(String name, Boolean active) {
+        if (name != null)
             this.name = name;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean updateSystemDefault(Boolean systemDefault) {
-        if (systemDefault != null) {
-            this.systemDefault = systemDefault;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean updateActive(Boolean active) {
-        if (active != null) {
+        if (active != null)
             this.active = active;
-            return true;
-        }
-        return false;
     }
 }

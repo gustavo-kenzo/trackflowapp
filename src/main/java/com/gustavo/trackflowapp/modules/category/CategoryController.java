@@ -41,10 +41,4 @@ public class CategoryController {
     public ResponseEntity<CategoryDataDTO> updateCategory(@RequestBody @Valid CategoryUpdateDTO dto, @AuthenticationPrincipal(expression = "id") Long userId, @PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.updateCategory(dto, userId, categoryId));
     }
-
-    @DeleteMapping("/delete/{categoryId}")
-    public ResponseEntity deleteCategory(@AuthenticationPrincipal(expression = "id") Long userId, @PathVariable Long categoryId) {
-        categoryService.deleteCategory(userId, categoryId);
-        return ResponseEntity.noContent().build();
-    }
 }
