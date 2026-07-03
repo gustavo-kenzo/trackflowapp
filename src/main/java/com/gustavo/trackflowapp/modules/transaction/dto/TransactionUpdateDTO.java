@@ -1,6 +1,7 @@
 package com.gustavo.trackflowapp.modules.transaction.dto;
 
 import com.gustavo.trackflowapp.modules.transaction.TransactionType;
+import jakarta.validation.constraints.NotNull;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record TransactionUpdateDTO(
+        @NotNull
         Long id,
         Long accountId,
         Long categoryId,

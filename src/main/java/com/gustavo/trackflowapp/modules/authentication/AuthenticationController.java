@@ -4,6 +4,7 @@ import com.gustavo.trackflowapp.infra.token.TokenService;
 import com.gustavo.trackflowapp.modules.authentication.dto.LoginDTO;
 import com.gustavo.trackflowapp.modules.authentication.dto.TokenDTO;
 import com.gustavo.trackflowapp.modules.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     private final TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity login(@RequestBody @Valid LoginDTO loginDTO) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password());
         var authentication = authenticationManager.authenticate(authenticationToken);
         var token = tokenService.generateToken((User) authentication.getPrincipal());

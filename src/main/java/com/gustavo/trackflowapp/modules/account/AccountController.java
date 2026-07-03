@@ -3,6 +3,7 @@ package com.gustavo.trackflowapp.modules.account;
 import com.gustavo.trackflowapp.modules.account.dto.AccountDataDTO;
 import com.gustavo.trackflowapp.modules.account.dto.AccountRegisterDTO;
 import com.gustavo.trackflowapp.modules.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<AccountDataDTO> createAccount(@RequestBody AccountRegisterDTO accountRegisterDTO, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+    public ResponseEntity<AccountDataDTO> createAccount(@RequestBody @Valid AccountRegisterDTO accountRegisterDTO, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
         var accountData = accountService.create(accountRegisterDTO, user);
         var uri = uriBuilder.path("/accounts/{id}").buildAndExpand(accountData.id()).toUri();
         return ResponseEntity.created(uri).body(accountData);
