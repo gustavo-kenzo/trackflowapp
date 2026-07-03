@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -68,7 +69,7 @@ public class Transaction extends AuditableEntity {
                        LocalDate competenceDate,
                        LocalDate settlementDate,
                        String description) {
-        validateNonNull(user, account, type, competenceDate);
+        validateNonNull(List.of(user, account, type, competenceDate));
 
         validateOwnership(category, user, Category::getUser, "category does not belong to this user");
         validateOwnership(account, user, Account::getUser, "this account does not belong to this user");
@@ -96,11 +97,8 @@ public class Transaction extends AuditableEntity {
         this.status = this.settlementDate != null ? TransactionStatus.SETTLED : TransactionStatus.PENDING;
     }
 
-    private void validateNonNull(User user, Account account, TransactionType type, LocalDate competenceDate) {
-        Objects.requireNonNull(user, "user is required");
-        Objects.requireNonNull(account, "account is required");
-        Objects.requireNonNull(type, "type is required");
-        Objects.requireNonNull(competenceDate, "competenceDate is required");
+    private <T> void validateNonNull(List<T> obj) {
+        obj.forEach(ob -> Objects.requireNonNull(ob, "Required field is missing"));
     }
 
     private <T> void validateOwnership(T entity, User user, Function<T, User> userExtractor, String errorMessage) {

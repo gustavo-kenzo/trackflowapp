@@ -28,7 +28,7 @@ public class TransactionService {
         validadeAccountIsActive(account);
         Category category = null;
         if (dto.categoryId() != null)
-            category = categoryService.getCategory(user.getId(), dto.categoryId());
+            category = categoryService.getCategory(dto.categoryId(), user.getId());
 
         var transaction = new Transaction(
                 user,
@@ -41,11 +41,12 @@ public class TransactionService {
                 dto.settlementDate(),
                 dto.description()
         );
-        if (transaction.getStatus() == TransactionStatus.SETTLED)
+        if (transaction.getStatus() == TransactionStatus.SETTLED) {
             if (transaction.getType() == TransactionType.INCOME)
                 transaction.getAccount().credit(transaction.getAmount());
             else
                 transaction.getAccount().debit(transaction.getAmount());
+        }
 
         transactionRepository.save(transaction);
         return new TransactionDataDTO(transaction);
