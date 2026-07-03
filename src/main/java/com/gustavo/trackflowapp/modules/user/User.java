@@ -41,7 +41,7 @@ public class User extends AuditableEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     public void updateName(String name) {
