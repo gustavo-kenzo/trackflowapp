@@ -28,7 +28,6 @@ public class TransactionController {
 
     @PatchMapping("/settle")
     public ResponseEntity<TransactionDataDTO> settleTransaction(@RequestBody @Valid TransactionSettleDTO dto, @AuthenticationPrincipal User user) {
-        System.out.println("ENTROU PELO MENOS");
         return ResponseEntity.ok(transactionService.settleTransaction(dto, user));
     }
 

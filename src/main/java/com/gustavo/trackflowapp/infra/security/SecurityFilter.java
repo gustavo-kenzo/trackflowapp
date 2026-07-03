@@ -30,7 +30,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                 .map(headerAuth -> headerAuth.replace("Bearer ", ""))
                 .orElse(null);
 
-        System.out.println(token);
         if (token != null) {
             var userId = tokenService.verifyToken(token);
             var user = userRepository.findById(userId).orElseThrow(() -> new UnauthorizedException("User not found"));

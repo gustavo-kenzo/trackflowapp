@@ -55,8 +55,6 @@ public class Account extends AuditableEntity {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new BusinessRuleException("amount must be positive");
 
-//        if (newBalance.compareTo(BigDecimal.ZERO) < 0 && this.type != AccountType.CREDIT_CARD)
-//            throw new IllegalStateException("insufficient funds");
 
         this.currentBalance = this.currentBalance.subtract(amount);
     }
