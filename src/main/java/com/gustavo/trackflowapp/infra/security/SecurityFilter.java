@@ -2,6 +2,7 @@ package com.gustavo.trackflowapp.infra.security;
 
 import com.gustavo.trackflowapp.infra.token.TokenService;
 import com.gustavo.trackflowapp.modules.user.UserRepository;
+import com.gustavo.trackflowapp.shared.exception.UnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         System.out.println(token);
         if (token != null) {
             var userId = tokenService.verifyToken(token);
-            var user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            var user = userRepository.findById(userId).orElseThrow(() -> new UnauthorizedException("User not found"));
             var authenticate = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticate);
         }

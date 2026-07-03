@@ -2,6 +2,7 @@ package com.gustavo.trackflowapp.modules.account;
 
 import com.gustavo.trackflowapp.modules.user.User;
 import com.gustavo.trackflowapp.shared.domain.AuditableEntity;
+import com.gustavo.trackflowapp.shared.exception.BusinessRuleException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,13 +47,13 @@ public class Account extends AuditableEntity {
 
     public void credit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
-            throw new IllegalArgumentException("amount must be positive");
+            throw new BusinessRuleException("amount must be positive");
         this.currentBalance = this.currentBalance.add(amount);
     }
 
     public void debit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
-            throw new IllegalArgumentException("amount must be positive");
+            throw new BusinessRuleException("amount must be positive");
 
 //        if (newBalance.compareTo(BigDecimal.ZERO) < 0 && this.type != AccountType.CREDIT_CARD)
 //            throw new IllegalStateException("insufficient funds");

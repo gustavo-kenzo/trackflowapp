@@ -3,6 +3,8 @@ package com.gustavo.trackflowapp.modules.account;
 import com.gustavo.trackflowapp.modules.account.dto.AccountDataDTO;
 import com.gustavo.trackflowapp.modules.account.dto.AccountRegisterDTO;
 import com.gustavo.trackflowapp.modules.user.User;
+import com.gustavo.trackflowapp.shared.exception.BusinessRuleException;
+import com.gustavo.trackflowapp.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,28 +33,28 @@ public class AccountService {
     public void delete(Long accountId, Long userId) {
         var rowsAffected = accountRepository.deleteMyAccountAndReturnCount(accountId, userId);
         if (rowsAffected == 0)
-            throw new RuntimeException("Account id not found for delete");
+            throw new ResourceNotFoundException("Account id not found for delete");
     }
 
     @Transactional
     public AccountDataDTO deactivate(Long accountId, Long userId) {
-        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for deactivate"));
+        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new ResourceNotFoundException("Account id not found for deactivate"));
         if (!account.isActive())
-            throw new RuntimeException("Account is already inactive");
+            throw new BusinessRuleException("Account is already inactive");
         account.deactivate();
         return new AccountDataDTO(account);
     }
 
     @Transactional
     public AccountDataDTO activate(Long accountId, Long userId) {
-        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
+        var account = accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new ResourceNotFoundException("Account id not found for activate"));
         if (account.isActive())
-            throw new RuntimeException("Account is already active");
+            throw new BusinessRuleException("Account is already active");
         account.activate();
         return new AccountDataDTO(account);
     }
 
     public Account getAccount(Long accountId, Long userId) {
-        return accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new RuntimeException("Account id not found for activate"));
+        return accountRepository.findMyAccount(accountId, userId).orElseThrow(() -> new ResourceNotFoundException("Account id not found"));
     }
 }

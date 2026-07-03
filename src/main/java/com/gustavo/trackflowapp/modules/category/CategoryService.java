@@ -4,6 +4,7 @@ import com.gustavo.trackflowapp.modules.category.dto.CategoryDataDTO;
 import com.gustavo.trackflowapp.modules.category.dto.CategoryRegisterDTO;
 import com.gustavo.trackflowapp.modules.category.dto.CategoryUpdateDTO;
 import com.gustavo.trackflowapp.modules.user.User;
+import com.gustavo.trackflowapp.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,13 +37,13 @@ public class CategoryService {
 
     @Transactional
     public CategoryDataDTO updateCategory(CategoryUpdateDTO dto, Long userId, Long categoryId) {
-        var category = categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new RuntimeException("Category not found for this user"));
+        var category = categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found for this user"));
 
         category.update(dto.name(), dto.active());
         return new CategoryDataDTO(category);
     }
 
     public Category getCategory(Long categoryId, Long userId) {
-        return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new RuntimeException("Category id not found"));
+        return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new ResourceNotFoundException("Category id not found"));
     }
 }

@@ -5,6 +5,7 @@ import com.gustavo.trackflowapp.modules.category.Category;
 import com.gustavo.trackflowapp.modules.recurrence.Recurrence;
 import com.gustavo.trackflowapp.modules.user.User;
 import com.gustavo.trackflowapp.shared.domain.AuditableEntity;
+import com.gustavo.trackflowapp.shared.exception.BusinessRuleException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,16 +83,16 @@ public class Transaction extends AuditableEntity {
         this.recurrence = recurrence;
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
-            throw new IllegalArgumentException("amount must be positive");
+            throw new BusinessRuleException("amount must be positive");
         this.amount = amount;
         this.type = type;
         this.competenceDate = competenceDate;
         this.settlementDate = settlementDate;
         if (settlementDate != null) {
             if (settlementDate.isBefore(competenceDate))
-                throw new IllegalArgumentException("settlementDate cannot be before competenceDate");
+                throw new BusinessRuleException("settlementDate cannot be before competenceDate");
             if (settlementDate.isAfter(LocalDate.now()))
-                throw new IllegalArgumentException("settlementDate shouldn't be future");
+                throw new BusinessRuleException("settlementDate shouldn't be future");
         }
         this.description = description;
         this.status = this.settlementDate != null ? TransactionStatus.SETTLED : TransactionStatus.PENDING;
@@ -105,24 +106,24 @@ public class Transaction extends AuditableEntity {
         if (entity != null) {
             var owner = userExtractor.apply(entity);
             if (owner == null || !owner.getId().equals(user.getId()))
-                throw new IllegalArgumentException(errorMessage);
+                throw new BusinessRuleException(errorMessage);
         }
     }
 
     public void settle(LocalDate settlementDate) {
         if (this.status == TransactionStatus.SETTLED)
-            throw new IllegalStateException("transaction already settled");
+            throw new BusinessRuleException("transaction already settled");
         var date = settlementDate != null ? settlementDate : LocalDate.now();
         if (date.isBefore(this.competenceDate))
-            throw new IllegalStateException("settlementDate cannot be before competenceDate");
-        if(date.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("settlementDate shouldn't be future");
+            throw new BusinessRuleException("settlementDate cannot be before competenceDate");
+        if (date.isAfter(LocalDate.now()))
+            throw new BusinessRuleException("settlementDate shouldn't be future");
         this.status = TransactionStatus.SETTLED;
         this.settlementDate = date;
     }
 
     public void reopen() {
-        if (this.status == TransactionStatus.PENDING) throw new IllegalStateException("transaction already pending");
+        if (this.status == TransactionStatus.PENDING) throw new BusinessRuleException("transaction already pending");
         this.status = TransactionStatus.PENDING;
         this.settlementDate = null;
     }

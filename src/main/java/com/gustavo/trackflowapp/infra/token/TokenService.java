@@ -5,6 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.gustavo.trackflowapp.modules.user.User;
+import com.gustavo.trackflowapp.shared.exception.TokenException;
+import com.gustavo.trackflowapp.shared.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class TokenService {
                     .withExpiresAt(expiresAt())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error generating JWT token");
+            throw new TokenException("Error generating JWT token");
         }
     }
 
@@ -44,7 +46,7 @@ public class TokenService {
                     .asLong();
 
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid or expired token");
+            throw new UnauthorizedException("Invalid or expired token");
         }
     }
 

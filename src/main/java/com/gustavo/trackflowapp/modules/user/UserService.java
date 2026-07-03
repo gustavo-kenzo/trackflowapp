@@ -3,6 +3,7 @@ package com.gustavo.trackflowapp.modules.user;
 import com.gustavo.trackflowapp.modules.user.dto.UserDataDTO;
 import com.gustavo.trackflowapp.modules.user.dto.UserRegisterDTO;
 import com.gustavo.trackflowapp.modules.user.dto.UserUpdateDTO;
+import com.gustavo.trackflowapp.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,12 @@ public class UserService {
     public void delete(Long id) {
         var rowsAffected = userRepository.deleteByIdAndReturnCount(id);
         if (rowsAffected == 0)
-            throw new RuntimeException("User id not found for delete");
+            throw new ResourceNotFoundException("User id not found for delete");
     }
 
     @Transactional
     public UserDataDTO update(UserUpdateDTO dto, Long id) {
-        var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found for update"));
+        var user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for update"));
         if (dto.name() != null)
             user.updateName(dto.name());
         if (dto.password() != null) {
@@ -44,7 +45,7 @@ public class UserService {
     }
 
     public UserDataDTO getMyProfile(Long id) {
-        var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found for list"));
+        var user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for list"));
         return new UserDataDTO(user);
     }
 }
