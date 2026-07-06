@@ -12,6 +12,8 @@ import com.gustavo.trackflowapp.modules.user.User;
 import com.gustavo.trackflowapp.shared.exception.BusinessRuleException;
 import com.gustavo.trackflowapp.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,5 +103,30 @@ public class TransactionService {
             case SETTLED -> transaction.update(null, category, null, null, null, dto.description());
         }
         return new TransactionDataDTO(transaction);
+    }
+
+    public Page<TransactionDataDTO> listTransactions(User user, Long categoryId, TransactionType type, TransactionStatus status, Pageable pageable) {
+        var transaction = transactionRepository.findMyTransactions(user.getId(), categoryId, type, status, pageable);
+        return transaction.map(TransactionDataDTO::new);
+    }
+
+    public Page<TransactionDataDTO> listTransactionsInactiveAccount(User user, Long categoryId, TransactionType type, TransactionStatus status, Pageable pageable) {
+        var transaction = transactionRepository.findMyTransactionsInactive(user.getId(), categoryId, type, status, pageable);
+        return transaction.map(TransactionDataDTO::new);
+    }
+
+    @Transactional
+    public void deleteTransaction(Long transactionId, User user) {
+        var transaction = transactionRepository.findMyTransactionById(transactionId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+        var account = transaction.getAccount();
+        if (transaction.getStatus() == TransactionStatus.SETTLED) {
+            switch (transaction.getType()) {
+                case EXPENSE -> account.credit(transaction.getAmount());
+                case INCOME -> account.debit(transaction.getAmount());
+            }
+        }
+        var rowsAffected = transactionRepository.deleteMyTransaction(transactionId, user.getId());
+        if (rowsAffected == 0)
+            throw new ResourceNotFoundException("Transaction id not found for hard delete");
     }
 }

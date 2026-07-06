@@ -7,6 +7,8 @@ import com.gustavo.trackflowapp.modules.transaction.dto.TransactionUpdateDTO;
 import com.gustavo.trackflowapp.modules.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +41,30 @@ public class TransactionController {
     @PutMapping
     public ResponseEntity<TransactionDataDTO> updateTransaction(@RequestBody @Valid TransactionUpdateDTO dto, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(transactionService.updateTransaction(dto, user));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<Page<TransactionDataDTO>> listTransactions(@AuthenticationPrincipal User user,
+                                                                     @RequestParam(required = false) Long categoryId,
+                                                                     @RequestParam(required = false) TransactionType type,
+                                                                     @RequestParam(required = false) TransactionStatus status,
+                                                                     Pageable pageable) {
+        return ResponseEntity.ok(transactionService.listTransactions(user, categoryId, type, status, pageable));
+    }
+
+    @GetMapping("/inactive")
+    public ResponseEntity<Page<TransactionDataDTO>> listTransactionsAccountInactive(@AuthenticationPrincipal User user,
+                                                                     @RequestParam(required = false) Long categoryId,
+                                                                     @RequestParam(required = false) TransactionType type,
+                                                                     @RequestParam(required = false) TransactionStatus status,
+                                                                     Pageable pageable) {
+        return ResponseEntity.ok(transactionService.listTransactionsInactiveAccount(user, categoryId, type, status, pageable));
+    }
+
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<TransactionDataDTO> delete(@PathVariable Long transactionId,
+                                                     @AuthenticationPrincipal User user) {
+        transactionService.deleteTransaction(transactionId, user);
+        return ResponseEntity.noContent().build();
     }
 }

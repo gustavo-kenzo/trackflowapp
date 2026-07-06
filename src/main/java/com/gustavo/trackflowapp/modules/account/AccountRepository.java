@@ -18,7 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             FROM Account c
             JOIN c.user u
             WHERE u.id = :id
-            AND c.active = true
             """)
     Page<Account> findMyAccounts(@Param("id") Long id, Pageable pageable);
 
