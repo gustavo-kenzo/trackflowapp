@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Stream;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
@@ -98,9 +100,17 @@ public class TransactionService {
         var category = dto.categoryId() != null ? categoryService.getCategory(dto.categoryId(), user.getId()) : null;
 
         switch (transaction.getStatus()) {
-            case PENDING ->
-                    transaction.update(account, category, dto.amount(), dto.type(), dto.competenceDate(), dto.description());
-            case SETTLED -> transaction.update(null, category, null, null, null, dto.description());
+            case PENDING -> {
+                transaction.update(account, category, dto.amount(), dto.type(), dto.competenceDate(), dto.description());
+            }
+            case SETTLED -> {
+                var listVerification = Stream.of(dto.accountId(), dto.amount(), dto.type(), dto.competenceDate());
+                listVerification.forEach(obj -> {
+                    if (obj != null)
+                        throw new BusinessRuleException("Can only update category and description. Transaction is settled");
+                });
+                transaction.update(null, category, null, null, null, dto.description());
+            }
         }
         return new TransactionDataDTO(transaction);
     }
