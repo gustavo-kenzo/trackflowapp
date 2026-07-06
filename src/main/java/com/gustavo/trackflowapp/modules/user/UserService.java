@@ -29,7 +29,7 @@ public class UserService {
     public void delete(Long id) {
         var rowsAffected = userRepository.deleteByIdAndReturnCount(id);
         if (rowsAffected == 0)
-            throw new ResourceNotFoundException("User id not found for delete");
+            throw new ResourceNotFoundException("User id not found for hard delete");
     }
 
     @Transactional

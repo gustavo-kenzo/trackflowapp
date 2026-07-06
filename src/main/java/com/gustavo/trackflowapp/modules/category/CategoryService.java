@@ -46,4 +46,11 @@ public class CategoryService {
     public Category getCategory(Long categoryId, Long userId) {
         return categoryRepository.findCategory(userId, categoryId).orElseThrow(() -> new ResourceNotFoundException("Category id not found"));
     }
+
+    @Transactional
+    public void hardDelete(Long accountId, User user) {
+        var rowsAffected = categoryRepository.hardDelete(accountId, user.getId());
+        if (rowsAffected == 0)
+            throw new ResourceNotFoundException("Category not found for hard delete");
+    }
 }

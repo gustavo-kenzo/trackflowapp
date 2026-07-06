@@ -21,11 +21,11 @@ create table transactions (
     constraint fk_transactions_account
         foreign key(account_id)
         references accounts(id)
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
     constraint fk_transactions_category
         foreign key(category_id)
         references categories (id)
-        ON DELETE RESTRICT,
+        ON DELETE SET NULL,
     constraint fk_transactions_recurrence
         foreign key(recurrence_id)
         references recurrences (id)

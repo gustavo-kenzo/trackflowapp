@@ -33,7 +33,7 @@ public class AccountController {
 
     @DeleteMapping("/{accountId}")
     public ResponseEntity deleteMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
-        accountService.delete(accountId, userId);
+        accountService.hardDelete(accountId, userId);
         return ResponseEntity.noContent().build();
     }
 

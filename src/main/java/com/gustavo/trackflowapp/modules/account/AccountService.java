@@ -30,10 +30,10 @@ public class AccountService {
     }
 
     @Transactional
-    public void delete(Long accountId, Long userId) {
+    public void hardDelete(Long accountId, Long userId) {
         var rowsAffected = accountRepository.deleteMyAccountAndReturnCount(accountId, userId);
         if (rowsAffected == 0)
-            throw new ResourceNotFoundException("Account id not found for delete");
+            throw new ResourceNotFoundException("Account id not found for hard delete");
     }
 
     @Transactional
