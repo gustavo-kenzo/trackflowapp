@@ -20,10 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigurations {
 
     private final SecurityFilter securityFilter;
+    private final CorsConfig corsConfiguration;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity https) {
-        return https.csrf(csrf -> csrf.disable())
+        return https.cors(cors -> cors.configurationSource(corsConfiguration.corsSource()))
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, "/users").permitAll();
