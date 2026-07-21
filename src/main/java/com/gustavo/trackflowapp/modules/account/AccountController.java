@@ -37,13 +37,11 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    //usuario desativa apenas conta que ele mesmo criou
     @PatchMapping("/{accountId}/deactivate")
     public ResponseEntity deactivateMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
         return ResponseEntity.ok(accountService.deactivate(accountId, userId));
     }
 
-    //usuario ativa apenas conta que ele mesmo criou
     @PatchMapping("/{accountId}/activate")
     public ResponseEntity activateMyAccount(@PathVariable Long accountId, @AuthenticationPrincipal(expression = "id") Long userId) {
         return ResponseEntity.ok(accountService.activate(accountId, userId));
