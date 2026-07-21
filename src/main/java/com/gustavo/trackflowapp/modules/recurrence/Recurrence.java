@@ -37,13 +37,14 @@ public class Recurrence extends AuditableEntity {
     public Recurrence(User user,
                       RecurrenceFrequency frequency,
                       LocalDate startDate,
+                      LocalDate endDate,
                       int installmentsTotal) {
         this.user = user;
         this.frequency = frequency;
         this.startDate = startDate != null ? startDate : LocalDate.now();
         if (installmentsTotal <= 0) throw new IllegalArgumentException("installments total must be positive");
         this.installmentsTotal = installmentsTotal;
-        this.endDate = defineEndDate();
+        this.endDate = endDate != null ? endDate : defineEndDate();
     }
 
     // CORREÇÃO: Cálculo de endDate corrigido para usar installmentsTotal - 1
