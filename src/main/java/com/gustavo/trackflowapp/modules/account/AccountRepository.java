@@ -11,10 +11,8 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Page<Account> findByUserNameIgnoreCaseAndActiveTrue(String owner, Pageable pageable);
-
     @Query("""
-            SELECT c 
+            SELECT c
             FROM Account c
             JOIN c.user u
             WHERE u.id = :id
@@ -22,7 +20,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Page<Account> findMyAccounts(@Param("id") Long id, Pageable pageable);
 
     @Query("""
-            SELECT c 
+            SELECT c
             FROM Account c
             JOIN c.user u
             WHERE u.id = :userId
