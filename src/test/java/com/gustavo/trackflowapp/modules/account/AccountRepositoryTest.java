@@ -1,6 +1,5 @@
 package com.gustavo.trackflowapp.modules.account;
 
-import com.gustavo.trackflowapp.integration.container.AbstractIntegrationContainer;
 import com.gustavo.trackflowapp.modules.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,9 +7,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,8 +19,8 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class AccountRepositoryTest extends AbstractIntegrationContainer {
+@ActiveProfiles("test")
+class AccountRepositoryTest {
 
     private static final PageRequest DEFAULT_PAGE = PageRequest.of(0, 10);
 
