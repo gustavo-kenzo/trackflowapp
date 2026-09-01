@@ -15,7 +15,6 @@ import tools.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryIntegrationTest extends AbstractIntegrationTest {
 
